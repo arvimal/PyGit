@@ -52,3 +52,22 @@ def main(argv=sys.argv[1:]):
         cmd_show_ref(args)
     elif args.command == "tag":
         cmd_tag(args)
+
+class GitRepository:
+    """
+    A Git repository object
+    """
+    worktree = None
+    gitdir = None
+    conf = None
+
+    def __init__(self, path, force=False):
+        self.worktree = path
+        self.gitdir = os.path.join(path, ".git")
+
+        if not (force or os.path.isdir(self.gitdir)):
+            raise Exception(f"{path} is not a Git repository")
+
+        # Read configuration file at `.git/config`
+        self.conf = configparser.ConfigParser()
+        cf = repo_file(self, ".config")
